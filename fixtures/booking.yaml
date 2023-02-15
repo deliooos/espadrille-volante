@@ -1,0 +1,11 @@
+App\Entity\Booking:
+  booking_{1..50}:
+    firstName: <firstName()>
+    lastName: <lastName()>
+    email: <email()>
+    phone: <phoneNumber()>
+    nbrAdults: <numberBetween(2, 4)>
+    nbrChildren: <numberBetween(0, 2)>
+    startDate: <dateTimeBetween('05/05/2023', '08/10/2023')>
+    endDate: <dateTimeBetween('08/11/2023', '10/10/2023')>
+    housing: '@owned_mobilehome4_*'

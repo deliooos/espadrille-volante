@@ -71,17 +71,28 @@ class HousingRepository extends ServiceEntityRepository
             ->andWhere('h.type = :type')
             ->setParameter('type', 'mobilehome');
 
-            if (!empty($data->size)) {
-                $query = $query
-                    ->andWhere('h.size = :size')
-                    ->setParameter('size', $data->size);
-            }
+        if (!empty($data->startDate) && !empty($data->endDate)) {
+            $query = $query
+                ->andWhere('h.id NOT IN (
+                    SELECT IDENTITY(b.housing)
+                    FROM App\Entity\Booking b
+                    WHERE b.startDate <= :startDate AND b.endDate >= :endDate
+                )')
+                ->setParameter('startDate', $data->startDate)
+                ->setParameter('endDate', $data->endDate);
+        }
 
-            if (!empty($data->fromCompanyOnly) && $data->fromCompanyOnly === true) {
-                $query = $query
-                    ->andWhere('h.owner IS NULL');
-            }
+        if (!empty($data->size)) {
+            $query = $query
+                ->andWhere('h.size = :size')
+                ->setParameter('size', $data->size);
+        }
 
-            return $query->getQuery()->getResult();
+        if (!empty($data->fromCompanyOnly) && $data->fromCompanyOnly === true) {
+            $query = $query
+                ->andWhere('h.owner IS NULL');
+        }
+
+        return $query->getQuery()->getResult();
     }
 }
