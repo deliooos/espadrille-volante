@@ -1,0 +1,61 @@
+App\Entity\Housing:
+  owned_mobilehome3_{1..7}:
+    type: 'mobilehome'
+    name: <randomElement(['Mobile Home Cozy', 'Mobile Home Sympa', 'Mobile Home Cool'])>
+    size: 3
+    price: 20
+    description: <text()>
+    owner: '@user_*'
+    thumbnail: https://picsum.photos/300/300
+  owned_mobilehome4_{1..7}:
+    type: 'mobilehome'
+    name: <randomElement(['Mobile Home Cozy', 'Mobile Home Sympa', 'Mobile Home Cool'])>
+    size: 4
+    price: 24
+    description: <text()>
+    owner: '@user_*'
+    thumbnail: https://picsum.photos/300/300
+  owned_mobilehome5_{1..7}:
+    type: 'mobilehome'
+    name: <randomElement(['Mobile Home Cozy', 'Mobile Home Sympa', 'Mobile Home Cool'])>
+    size: 5
+    price: 27
+    description: <text()>
+    owner: '@user_*'
+    thumbnail: https://picsum.photos/300/300
+  owned_mobilehome8_{1..9}:
+    type: 'mobilehome'
+    name: <randomElement(['Mobile Home Cozy', 'Mobile Home Sympa', 'Mobile Home Cool'])>
+    size: 8
+    price: 34
+    description: <text()>
+    owner: '@user_*'
+    thumbnail: https://picsum.photos/300/300
+  mobilehome3_{1..5}:
+    type: 'mobilehome'
+    name: <randomElement(['Mobile Home Cozy', 'Mobile Home Sympa', 'Mobile Home Cool'])>
+    description: <text()>
+    price: 20
+    size: 3
+    thumbnail: https://picsum.photos/300/300
+  mobilehome4_{1..5}:
+    type: 'mobilehome'
+    name: <randomElement(['Mobile Home Cozy', 'Mobile Home Sympa', 'Mobile Home Cool'])>
+    description: <text()>
+    price: 24
+    size: 4
+    thumbnail: https://picsum.photos/300/300
+  mobilehome5_{1..5}:
+    type: 'mobilehome'
+    name: <randomElement(['Mobile Home Cozy', 'Mobile Home Sympa', 'Mobile Home Cool'])>
+    description: <text()>
+    price: 27
+    size: 5
+    thumbnail: https://picsum.photos/300/300
+  mobilehome8_{1..5}:
+    type: 'mobilehome'
+    name: <randomElement(['Mobile Home Cozy', 'Mobile Home Sympa', 'Mobile Home Cool'])>
+    description: <text()>
+    price: 34
+    size: 8
+    thumbnail: https://picsum.photos/300/300

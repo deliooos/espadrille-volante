@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!{% endblock %}
+
+{% block body %}
+    <div class="flex flex-col gap-5 px-[10%] pt-32">
+        <h1 class="font-title text-2xl text-base-content">Nos <span class="font-semibold text-5xl">mobile homes</span></h1>
+        <turbo-frame target="mobile_home_results">
+            {{ component('mobile_home_filter') }}
+        </turbo-frame>
+        <div class="divider"></div>
+        <turbo-frame id="mobile_home_results">
+            <div class="flex flex-wrap gap-8">
+                {% for mobile_home in mobile_homes %}
+                    <div class="card w-96 bg-base-100 shadow-xl">
+                        <figure><img src="{{ mobile_home.thumbnail }}" alt="Miniature montrant le mobile home" class="w-full"/></figure>
+                        <div class="card-body">
+                            <h2 class="card-title">{{ mobile_home.name }}</h2>
+                            <h6 class="-mt-2 text-base-content/60">{{ mobile_home.size }} personnes max</h6>
+                            <p class="line-clamp-3">{{ mobile_home.description }}</p>
+                            <div class="card-actions flex-col justify-start">
+                                <button class="btn btn-primary gap-2">Réserver <span class="badge">{{ mobile_home.price }}€/j</span></button>
+                                <div class="badge badge-outline">
+                                    {% if mobile_home.owner %}
+                                        Par {{ mobile_home.owner.firstName }} {{ mobile_home.owner.lastName }}
+                                    {% else %}
+                                        Par {{ company }}
+                                    {% endif %}
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </turbo-frame>
+    </div>
+{% endblock %}

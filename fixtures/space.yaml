@@ -1,0 +1,15 @@
+App\Entity\Housing:
+  space8_{1..15}:
+    type: 'space'
+    name: <randomElement(['Emplacement Cozy', 'Emplacement Sympa', 'Emplacement Cool'])>
+    description: <text()>
+    price: 12
+    surface: 8
+    thumbnail: https://picsum.photos/300/300
+  space12_{1..15}:
+    type: 'space'
+    name: <randomElement(['Emplacement Cozy', 'Emplacement Sympa', 'Emplacement Cool'])>
+    description: <text()>
+    price: 14
+    surface: 12
+    thumbnail: https://picsum.photos/300/300
