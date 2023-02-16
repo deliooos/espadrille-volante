@@ -2,16 +2,15 @@
 
 namespace App\Form;
 
-use App\Data\MobileHomeFilter;
+use App\Data\CaravanFilter;
 use DateTime;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class MobileHomeFilterType extends AbstractType
+class CaravanFilterType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -26,14 +25,10 @@ class MobileHomeFilterType extends AbstractType
             ])
             ->add('size', ChoiceType::class, [
                 'choices' => [
-                    '3 personnes' => 3,
+                    '2 personnes' => 2,
                     '4 personnes' => 4,
-                    '5 personnes' => 5,
-                    '8 personnes' => 8,
-                ],
-            ])
-            ->add('fromCompanyOnly', CheckboxType::class, [
-                'required' => false,
+                    '6 personnes' => 6,
+                    ]
             ])
         ;
     }
@@ -41,7 +36,7 @@ class MobileHomeFilterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => MobileHomeFilter::class,
+            'data_class' => CaravanFilter::class,
             'method' => 'GET',
             'csrf_protection' => false,
         ]);

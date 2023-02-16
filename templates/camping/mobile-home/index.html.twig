@@ -6,7 +6,7 @@
     <div class="flex flex-col gap-5 px-[10%] pt-32">
         <h1 class="font-title text-2xl text-center text-base-content">Nos <span class="font-semibold text-5xl text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">mobile homes</span></h1>
         <p class="font-semibold text-center text-accent text-lg -mt-2">Faites une recherche pour trouver le mobile home parfait !</p>
-        <turbo-frame target="mobile_home_results" class="flex justify-center">
+        <turbo-frame target="mobile_home_results" class="flex flex-col items-center">
             {{ component('mobile_home_filter') }}
         </turbo-frame>
         <div class="divider"></div>
@@ -21,7 +21,7 @@
                                 <h6 class="-mt-2 text-base-content/60">{{ mobile_home.size }} personnes max</h6>
                                 <p class="line-clamp-3">{{ mobile_home.description }}</p>
                                 <div class="card-actions flex-col justify-start">
-                                    <button class="btn btn-primary gap-2">Réserver <span class="badge">{{ mobile_home.price }}€/j</span></button>
+                                    <a href="{{ path('app_camping_mobile_home_book', {id: mobile_home.id}) }}" class="btn btn-primary gap-2">Réserver <span class="badge">{{ mobile_home.price }}€/j</span></a>
                                     <div class="badge badge-outline">
                                         {% if mobile_home.owner %}
                                             Par {{ mobile_home.owner.firstName }} {{ mobile_home.owner.lastName }}
@@ -35,7 +35,11 @@
                         </div>
                     {% endfor %}
                 {% else %}
-                    <p class="text-center text-base-content">Aucun mobile home ne correspond à votre recherche</p>
+                    <div class="text-center">
+                        <h2 class="font-title font-black text-4xl">Oops !</h2>
+                        <img src="{{ asset('assets/search.svg') }}" alt="Image représentant des résultats de recherche vides" class="w-2/3 mx-auto">
+                        <p class="text-center text-base-content text-xl">Aucun mobile home ne correspond à votre recherche... Essayez une recherche moins large ?</p>
+                    </div>
                 {% endif %}
             </div>
         </turbo-frame>

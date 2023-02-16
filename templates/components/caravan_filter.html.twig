@@ -1,0 +1,17 @@
+<div{{ attributes }}>
+    {{ form_start(form, {attr: {'class': 'flex gap-4'}}) }}
+    <div class="flex flex-col w-fit">
+        {{ form_label(form.startDate, 'Date d\'arrivée', {label_attr: {'class': 'text-sm text-base-content/60'}}) }}
+        {{ form_widget(form.startDate, {attr: {'class': 'flex my-auto'}}) }}
+    </div>
+    <div class="flex flex-col w-fit">
+        {{ form_label(form.endDate, 'Date de départ', {label_attr: {'class': 'text-sm text-base-content/60'}}) }}
+        {{ form_widget(form.endDate, {attr: {'class': 'flex my-auto'}}) }}
+    </div>
+    <div class="flex flex-col w-fit">
+        {{ form_label(form.size, 'Nombre de voyageurs', {label_attr: {'class': 'text-sm text-base-content/60'}}) }}
+        {{ form_widget(form.size, {attr: {'class': 'select select-bordered'}}) }}
+    </div>
+    <button type="submit" class="btn self-end">Chercher</button>
+    {{ form_end(form) }}
+</div>

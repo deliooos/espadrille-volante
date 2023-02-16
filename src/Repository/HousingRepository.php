@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Data\CaravanFilter;
 use App\Data\MobileHomeFilter;
+use App\Data\SpaceFilter;
 use App\Entity\Housing;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -91,6 +93,60 @@ class HousingRepository extends ServiceEntityRepository
         if (!empty($data->fromCompanyOnly) && $data->fromCompanyOnly === true) {
             $query = $query
                 ->andWhere('h.owner IS NULL');
+        }
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function findCaravanSearch(CaravanFilter $data)
+    {
+        $query = $this->createQueryBuilder('c')
+            ->select('c')
+            ->andWhere('c.type = :type')
+            ->setParameter('type', 'caravan');
+
+        if (!empty($data->startDate) && !empty($data->endDate)) {
+            $query = $query
+                ->andWhere('c.id NOT IN (
+                    SELECT IDENTITY(b.housing)
+                    FROM App\Entity\Booking b
+                    WHERE b.startDate <= :startDate AND b.endDate >= :endDate
+                )')
+                ->setParameter('startDate', $data->startDate)
+                ->setParameter('endDate', $data->endDate);
+        }
+
+        if (!empty($data->size)) {
+            $query = $query
+                ->andWhere('c.size = :size')
+                ->setParameter('size', $data->size);
+        }
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function findSpaceSearch(SpaceFilter $data)
+    {
+        $query = $this->createQueryBuilder('s')
+            ->select('s')
+            ->andWhere('s.type = :type')
+            ->setParameter('type', 'space');
+
+        if (!empty($data->startDate) && !empty($data->endDate)) {
+            $query = $query
+                ->andWhere('s.id NOT IN (
+                    SELECT IDENTITY(b.housing)
+                    FROM App\Entity\Booking b
+                    WHERE b.startDate <= :startDate AND b.endDate >= :endDate
+                )')
+                ->setParameter('startDate', $data->startDate)
+                ->setParameter('endDate', $data->endDate);
+        }
+
+        if (!empty($data->size)) {
+            $query = $query
+                ->andWhere('s.surface = :size')
+                ->setParameter('size', $data->size);
         }
 
         return $query->getQuery()->getResult();

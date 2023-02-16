@@ -1,0 +1,47 @@
+<div{{ attributes }}>
+    {{ form_start(form, {attr: {'class': 'flex flex-col gap-3'}}) }}
+        <div class="flex gap-3">
+            <div class="flex flex-col w-1/2">
+                {{ form_label(form.firstName, 'Prénom', {label_attr: {'class': 'text-sm text-base-content/60'}}) }}
+                {{ form_widget(form.firstName, {attr: {'class': 'input input-bordered'}}) }}
+            </div>
+            <div class="flex flex-col w-1/2">
+                {{ form_label(form.lastName, 'Nom', {label_attr: {'class': 'text-sm text-base-content/60'}}) }}
+                {{ form_widget(form.lastName, {attr: {'class': 'input input-bordered'}}) }}
+            </div>
+        </div>
+        <div class="flex gap-3">
+            <div class="flex flex-col w-full">
+                {{ form_label(form.email, 'Mail', {label_attr: {'class': 'text-sm text-base-content/60'}}) }}
+                {{ form_widget(form.email, {attr: {'class': 'input input-bordered w-full'}}) }}
+            </div>
+        </div>
+        <div class="flex gap-3 w-full">
+            <div class="flex flex-col w-full">
+                {{ form_label(form.phone, 'Téléphone', {label_attr: {'class': 'text-sm text-base-content/60'}}) }}
+                {{ form_widget(form.phone, {attr: {'class': 'input input-bordered'}}) }}
+            </div>
+        </div>
+        <div class="flex gap-3">
+            <div class="flex flex-col w-1/2">
+                {{ form_label(form.startDate, 'Date d\'arrivée', {label_attr: {'class': 'text-sm text-base-content/60'}}) }}
+                {{ form_widget(form.startDate, {attr: {'class': 'input input-bordered w-full'}}) }}
+            </div>
+            <div class="flex flex-col w-1/2">
+                {{ form_label(form.endDate, 'Date de départ', {label_attr: {'class': 'text-sm text-base-content/60'}}) }}
+                {{ form_widget(form.endDate, {attr: {'class': 'input input-bordered w-full'}}) }}
+            </div>
+        </div>
+        <div class="flex gap-3">
+            <div class="flex flex-col w-1/2">
+                {{ form_label(form.nbrAdults, 'Nombre d\'adultes', {label_attr: {'class': 'text-sm text-base-content/60'}}) }}
+                {{ form_widget(form.nbrAdults, {attr: {'class': 'input input-bordered'}}) }}
+            </div>
+            <div class="flex flex-col w-1/2">
+                {{ form_label(form.nbrChildren, 'Nombre d\'enfants', {label_attr: {'class': 'text-sm text-base-content/60'}}) }}
+                {{ form_widget(form.nbrChildren, {attr: {'class': 'input input-bordered'}}) }}
+            </div>
+        </div>
+        <button type="submit" class="btn bg-gradient-to-r from-primary to-accent border-0">Réserver</button>
+    {{ form_end(form) }}
+</div>

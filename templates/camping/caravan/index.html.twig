@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Caravanes - {{ company }}{% endblock %}
+
+{% block body %}
+    <div class="flex flex-col gap-5 px-[10%] pt-32">
+        <h1 class="font-title text-2xl text-center text-base-content">Nos <span class="font-semibold text-5xl text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">caravanes</span></h1>
+        <p class="font-semibold text-center text-accent text-lg -mt-2">Faites une recherche pour trouver la caravane parfaite !</p>
+        <turbo-frame target="caravan_results" class="flex flex-col items-center">
+            {{ component('caravan_filter') }}
+            <p class="text-base-content/60 text-center text-sm mt-1"><span class="text-error">* </span>Nous vous conseillons d'effectuer une recherche pour trouver seulement des logements libres et à votre convenance.</p>
+        </turbo-frame>
+        <div class="divider"></div>
+        <turbo-frame id="caravan_results">
+            <div class="flex flex-wrap justify-center gap-8">
+                {% if caravans|length > 0 %}
+                    {% for caravan in caravans %}
+                        <div class="card w-96 bg-base-100 shadow-xl">
+                            <figure><img src="{{ caravan.thumbnail }}" alt="Miniature montrant la caravane" class="w-full"/></figure>
+                            <div class="card-body">
+                                <h2 class="card-title">{{ caravan.name }}</h2>
+                                <h6 class="-mt-2 text-base-content/60">{{ caravan.size }} personnes max</h6>
+                                <p class="line-clamp-3">{{ caravan.description }}</p>
+                                <div class="card-actions flex-col justify-start">
+                                    <button class="btn btn-primary gap-2">Réserver <span class="badge">{{ caravan.price }}€/j</span></button>
+                                    <div class="badge badge-outline">
+                                        Par {{ company }}
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center">
+                        <h2 class="font-title font-black text-4xl">Oops !</h2>
+                        <img src="{{ asset('assets/search.svg') }}" alt="Image représentant des résultats de recherche vides" class="w-2/3 mx-auto">
+                        <p class="text-center text-base-content text-xl">Aucune caravane ne correspond à votre recherche... Essayez une recherche moins large ?</p>
+                    </div>
+                {% endif %}
+            </div>
+        </turbo-frame>
+    </div>
+{% endblock %}

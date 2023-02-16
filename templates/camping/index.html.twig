@@ -1,7 +1,44 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello CampingController!{% endblock %}
+{% block title %}Camping - {{ company }}{% endblock %}
 
 {% block body %}
-
+    <div class="flex flex-col items-center gap-5 px-[10%] pt-32">
+        <div class="text-center">
+            <h1 class="font-title text-2xl text-base-content mb-2">Découvrez les <span class="font-semibold text-5xl text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">vraies vacances</span></h1>
+            <p class="mx-auto text-base-content/60 text-xl max-w-3xl">Choisissez parmis nos 3 offres, modulables pour vous et toute la famille et les amis. Que vous soyez là pour vivre le luxe de la nature dans l'un de nos mobiles homes, plus aventureux dans une caravane ou amoureux d'aventure dans un emplacement libre</p>
+        </div>
+        <div class="space-y-36 mt-16">
+            <div class="flex gap-10">
+                <div class="w-1/2 overflow-hidden rounded-lg">
+                    <img src="{{ asset('assets/mobilehome.jpg') }}" alt="Mobile home" class="hover:scale-105 transition-transform">
+                </div>
+                <div class="flex flex-col gap-4 w-1/2">
+                    <h3 class="font-title font-semibold text-4xl">Mobile Home</h3>
+                    <p class="text-xl text-base-content/60">Vous êtes attirés par le luxe que la nature a à vous offrir. Vivez ce luxe dont vous rêvez dans nos mobiles tout équipés, de 3 à 8 personnes.</p>
+                    <a href="{{ path('app_camping_mobile_home') }}" class="btn btn-primary w-fit">Voir nos mobile homes</a>
+                </div>
+            </div>
+            <div class="flex gap-5">
+                <div class="flex flex-col gap-4 w-1/2 text-right">
+                    <h3 class="font-title font-semibold text-4xl">Caravane</h3>
+                    <p class="text-xl text-base-content/60">Vous êtes aventureux, mais vous souhaitez tout-de-même garder une once de luxe, dans ce cas, profitez de votre séjour dans votre chez-vous, en restant au plus proche de la nature dans nos caravanes, de 2 à 6 personnes.</p>
+                    <a href="{{ path('app_camping_caravan') }}" class="btn btn-primary w-fit self-end">Voir nos caravanes</a>
+                </div>
+                <div class="w-1/2 overflow-hidden rounded-lg">
+                    <img src="{{ asset('assets/caravane.jpg') }}" alt="Caravane" class="hover:scale-105 transition-transform">
+                </div>
+            </div>
+            <div class="flex gap-5">
+                <div class="w-1/2 overflow-hidden rounded-lg">
+                    <img src="{{ asset('assets/emplacement.jpg') }}" alt="Emplacement" class="hover:scale-105 transition-transform">
+                </div>
+                <div class="flex flex-col gap-4 w-1/2">
+                    <h3 class="font-title font-semibold text-4xl">Emplacements</h3>
+                    <p class="text-xl text-base-content/60">Vous êtes parmis les plus aventureux d'entre-nous. La nature vous appelle et vous lui répondez ! Vivez au plus proche de la nature, à votre façon dans nos emplacements de 8 et 12 mètres carrés.</p>
+                    <a href="{{ path('app_camping_place') }}" class="btn btn-primary w-fit">Voir nos emplacements</a>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
