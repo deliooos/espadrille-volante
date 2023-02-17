@@ -1,0 +1,9 @@
+<div {{ attributes }} data-controller="notification" data-notification-delay-value="5000" data-transition-enter-from="opacity-0 translate-x-6" data-transition-enter-to="opacity-100 translate-x-0" data-transition-leave-from="opacity-100 translate-x-0" data-transition-leave-to="opacity-0 translate-x-6" {{ attributes }} class="toast transition hidden z-50">
+    <div class="alert alert-{{ type }}">
+        <div>
+            <span>
+                {{ message|raw }}
+            </span>
+        </div>
+    </div>
+</div>

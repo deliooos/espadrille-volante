@@ -3,8 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\Booking;
+use App\Entity\Housing;
+use App\Service\FlashMessageService;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * @extends ServiceEntityRepository<Booking>
@@ -14,6 +18,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Booking[]    findAll()
  * @method Booking[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
+
 class BookingRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)

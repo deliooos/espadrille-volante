@@ -21,6 +21,12 @@
         {% endblock %}
     </head>
     <body class="font-main">
+        <div class="initialize !hidden"></div>
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                {{ component('notification', {'type': label, 'message': message}) }}
+            {% endfor %}
+        {% endfor %}
         {% include 'partials/_header.html.twig' %}
         <main class="classic-main">
             {% block body %}{% endblock %}

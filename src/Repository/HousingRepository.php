@@ -5,9 +5,11 @@ namespace App\Repository;
 use App\Data\CaravanFilter;
 use App\Data\MobileHomeFilter;
 use App\Data\SpaceFilter;
+use App\Entity\Booking;
 use App\Entity\Housing;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @extends ServiceEntityRepository<Housing>

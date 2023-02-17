@@ -6,6 +6,7 @@ use App\Entity\Booking;
 use DateTime;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -64,11 +65,11 @@ class MobileHomeBookType extends AbstractType
                     ]),
                     new GreaterThanOrEqual([
                         'value' => 1,
-                        'message' => 'Veuillez entrer un nombre d\'adultes supérieur ou égal à {{ value }}',
+                        'message' => 'Veuillez entrer un nombre d\'adultes supérieur ou égal à 1',
                     ]),
                     new LessThanOrEqual([
                         'value' => 8,
-                        'message' => 'Veuillez entrer un nombre d\'adultes inférieur ou égal à {{ value }}',
+                        'message' => 'Veuillez entrer un nombre d\'adultes inférieur ou égal à 8',
                     ]),
                 ],
             ])
@@ -80,37 +81,37 @@ class MobileHomeBookType extends AbstractType
                     ]),
                     new GreaterThanOrEqual([
                         'value' => 0,
-                        'message' => 'Veuillez entrer un nombre d\'enfants supérieur ou égal à {{ value }}',
+                        'message' => 'Veuillez entrer un nombre d\'enfants supérieur ou égal à 0',
                     ]),
                     new LessThanOrEqual([
                         'value' => 8,
-                        'message' => 'Veuillez entrer un nombre d\'enfants inférieur ou égal à {{ value }}',
+                        'message' => 'Veuillez entrer un nombre d\'enfants inférieur ou égal à 8',
                     ]),
                 ],
             ])
             ->add('startDate', DateType::class, [
                 'widget' => 'single_text',
                 'data' => $startDateData,
-                'property_path' => 'startDate',
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Veuillez entrer une date de début',
                     ]),
                     new LessThan([
-                        'propertyPath' => 'endDate',
+                        'propertyPath' => 'parent.all[endDate].data',
+                        'message' => 'Veuillez entrer une date de début inférieure à la date de fin',
                     ])
                 ],
             ])
             ->add('endDate', DateType::class, [
                 'widget' => 'single_text',
                 'data' => $endDateData,
-                'property_path' => 'endDate',
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Veuillez entrer une date de fin',
                     ]),
                     new GreaterThan([
-                        'propertyPath' => 'startDate',
+                        'propertyPath' => 'parent.all[startDate].data',
+                        'message' => 'Veuillez entrer une date de fin supérieure à la date de début',
                     ])
                 ],
             ])

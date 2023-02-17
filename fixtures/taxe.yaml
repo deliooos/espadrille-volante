@@ -1,0 +1,20 @@
+App\Entity\Tax:
+  child_stay_tax_{1}:
+    label: 'stay'
+    applicant: 'child'
+    applicant_tax: 0.35
+
+  child_pool_tax_{1}:
+    label: 'pool'
+    applicant: 'child'
+    applicant_tax: 1
+
+  adult_stay_tax_{1}:
+    label: 'stay'
+    applicant: 'adult'
+    applicant_tax: 0.60
+
+  adult_pool_tax_{1}:
+    label: 'pool'
+    applicant: 'adult'
+    applicant_tax: 1.5

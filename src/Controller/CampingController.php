@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Data\CaravanFilter;
-use App\Data\MobileHomeBook;
 use App\Data\MobileHomeFilter;
 use App\Data\SpaceFilter;
 use App\Entity\Booking;
@@ -12,10 +11,13 @@ use App\Form\CaravanFilterType;
 use App\Form\MobileHomeBookType;
 use App\Form\MobileHomeFilterType;
 use App\Form\SpaceFilterType;
+use App\Repository\BookingRepository;
 use App\Repository\HousingRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/camping')]
@@ -43,12 +45,43 @@ class CampingController extends AbstractController
     }
 
     #[Route('/mobile-home/{id}', name: 'app_camping_mobile_home_book')]
-    public function mobileHomeBook(Housing $housing, Request $request, HousingRepository $housingRepository): Response
+    public function mobileHomeBook(Housing $housing, Request $request, BookingRepository $bookingRepository): Response
     {
         $booking = new Booking();
 
         $form = $this->createForm(MobileHomeBookType::class, $booking);
         $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            // On vérifie que le logement n'est pas déjà loué à la date choisie
+            $bookings = $housing->getBookings();
+            foreach ($bookings as $b) {
+                if ($b->getStartDate() <= $booking->getStartDate() && $b->getEndDate() >= $booking->getEndDate()) {
+                    $this->addFlash('error', 'Le mobile home n\'est pas disponible aux dates que vous avez choisi');
+                    return $this->redirectToRoute('app_camping_mobile_home_book', ['id' => $housing->getId()]);
+                }
+            }
+
+            // On vérifie que la date de réservation soit après aujourd'hui
+            if ($booking->getStartDate() < new \DateTime('now')) {
+                $this->addFlash('error', 'Vous ne pouvez pas réserver avant demain');
+                return $this->redirectToRoute('app_camping_mobile_home_book', ['id' => $housing->getId()]);
+            }
+
+            if (($booking->getNbrAdults() + $booking->getNbrChildren()) > $housing->getSize()) {
+                $this->addFlash('error', sprintf('Il ne peut y avoir que %d personnes dans ce logement', $housing->getSize()));
+                return $this->redirectToRoute('app_camping_mobile_home_book', ['id' => $housing->getId()]);
+            }
+
+            $booking->setHousing($housing);
+            $bookingRepository->save($booking, true);
+
+
+
+            $this->addFlash('success', 'Votre réservation à bien été prise en compte');
+            return $this->redirectToRoute('app_home');
+        }
 
         return $this->renderForm('camping/mobile-home/book.html.twig', [
             'housing' => $housing,
