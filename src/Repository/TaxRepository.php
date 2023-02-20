@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Tax;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -63,4 +64,60 @@ class TaxRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function getAdultStayTax()
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.label = :label')
+            ->setParameter('label', 'stay')
+            ->andWhere('t.applicant = :applicant')
+            ->setParameter('applicant', 'adult')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function getChildStayTax()
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.label = :label')
+            ->setParameter('label', 'stay')
+            ->andWhere('t.applicant = :applicant')
+            ->setParameter('applicant', 'child')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function getAdultPoolTax()
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.label = :label')
+            ->setParameter('label', 'pool')
+            ->andWhere('t.applicant = :applicant')
+            ->setParameter('applicant', 'adult')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function getChildPoolTax()
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.label = :label')
+            ->setParameter('label', 'pool')
+            ->andWhere('t.applicant = :applicant')
+            ->setParameter('applicant', 'child')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

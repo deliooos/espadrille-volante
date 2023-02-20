@@ -7,14 +7,19 @@ use App\Data\MobileHomeFilter;
 use App\Data\SpaceFilter;
 use App\Entity\Booking;
 use App\Entity\Housing;
+use App\Entity\Invoice;
 use App\Form\CaravanFilterType;
 use App\Form\MobileHomeBookType;
 use App\Form\MobileHomeFilterType;
 use App\Form\SpaceFilterType;
 use App\Repository\BookingRepository;
 use App\Repository\HousingRepository;
+use App\Repository\TaxRepository;
+use App\Service\MobileHomeChecker;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -44,8 +49,11 @@ class CampingController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws NonUniqueResultException
+     */
     #[Route('/mobile-home/{id}', name: 'app_camping_mobile_home_book')]
-    public function mobileHomeBook(Housing $housing, Request $request, BookingRepository $bookingRepository): Response
+    public function mobileHomeBook(Housing $housing, Request $request, BookingRepository $bookingRepository, SessionInterface $session, TaxRepository $taxRepository, Security $security, EntityManagerInterface $em): Response
     {
         $booking = new Booking();
 
@@ -54,32 +62,21 @@ class CampingController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // On vérifie que le logement n'est pas déjà loué à la date choisie
-            $bookings = $housing->getBookings();
-            foreach ($bookings as $b) {
-                if ($b->getStartDate() <= $booking->getStartDate() && $b->getEndDate() >= $booking->getEndDate()) {
-                    $this->addFlash('error', 'Le mobile home n\'est pas disponible aux dates que vous avez choisi');
-                    return $this->redirectToRoute('app_camping_mobile_home_book', ['id' => $housing->getId()]);
-                }
-            }
+            $mobileHomeChecker = new MobileHomeChecker($session);
 
-            // On vérifie que la date de réservation soit après aujourd'hui
-            if ($booking->getStartDate() < new \DateTime('now')) {
-                $this->addFlash('error', 'Vous ne pouvez pas réserver avant demain');
-                return $this->redirectToRoute('app_camping_mobile_home_book', ['id' => $housing->getId()]);
-            }
+            // TODO handle if user is connected
 
-            if (($booking->getNbrAdults() + $booking->getNbrChildren()) > $housing->getSize()) {
-                $this->addFlash('error', sprintf('Il ne peut y avoir que %d personnes dans ce logement', $housing->getSize()));
+            if (!$mobileHomeChecker->checkAvailability($booking, $housing)) {
                 return $this->redirectToRoute('app_camping_mobile_home_book', ['id' => $housing->getId()]);
             }
 
             $booking->setHousing($housing);
             $bookingRepository->save($booking, true);
 
-
+            $mobileHomeChecker->makeInvoice($booking, $taxRepository, $security, $em);
 
             $this->addFlash('success', 'Votre réservation à bien été prise en compte');
+
             return $this->redirectToRoute('app_home');
         }
 
@@ -88,7 +85,6 @@ class CampingController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
 
     #[Route('/caravane', name: 'app_camping_caravan')]
     public function caravan(Request $request, HousingRepository $housingRepository): Response

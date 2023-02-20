@@ -45,9 +45,9 @@
                     <h4 class="font-semibold text-xl">
                         Mobile Home -
                         {% if housing.owner %}
-                            {{ housing.owner.firstName}} {{ housing.owner.lastName }}
+                            Par {{ housing.owner.firstName}} {{ housing.owner.lastName }}
                         {% else %}
-                            {{ company }}
+                            Par {{ company }}
                         {% endif %}
                     </h4>
                     <div class="divider"></div>
@@ -67,7 +67,15 @@
                     </div>
                 </div>
                 <div class="w-2/5 border-2 border-base-content/10 p-5 shadow-around rounded-lg">
-                    <h5 class="mb-5 font-semibold text-2xl">{{ housing.price }}€ <span class="font-normal">par jour</span></h5>
+                    <h5 class="mb-5 font-semibold text-2xl">{{ housing.price }}€ <span class="font-normal">par jour</span> - {{ housing.price * 1.15 }}€ <span class=" inline-flex items-center gap-1 font-normal">en haute saison <span class="tooltip" data-tip="La haute saison commence le 21 juin et se termine le 31 août, pendant celle-ci, le tarif journalier augment de 15%"><i class="ph-info text-base"></i></span></span></h5>
+                    {% if not app.user %}
+                        <div class="alert alert-info shadow-lg mb-5">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span><a href="{{ path('app_register') }}" class="link">Créez un compte</a> pour consulter vos réservations à tout moment !</span>
+                            </div>
+                        </div>
+                    {% endif %}
                     {{ component('mobile_home_book') }}
                 </div>
             </div>

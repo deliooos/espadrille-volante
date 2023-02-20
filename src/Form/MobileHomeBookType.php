@@ -115,6 +115,18 @@ class MobileHomeBookType extends AbstractType
                     ])
                 ],
             ])
+            ->add('poolDays', NumberType::class, [
+                'data' => '0',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Veuillez entrer le nombre de jours de piscine',
+                    ]),
+                    new GreaterThanOrEqual([
+                        'value' => 0,
+                        'message' => 'Veuillez entrer un nombre de jours de piscine supérieur ou égal à 0',
+                    ]),
+                ],
+            ])
         ;
     }
 
