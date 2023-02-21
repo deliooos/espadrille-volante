@@ -13,4 +13,10 @@ class HomeController extends AbstractController
     {
         return $this->render('home/index.html.twig');
     }
+
+    #[Route('/invoice')]
+    public function renderPDF(): Response
+    {
+        return $this->render('invoice/invoice.html.twig');
+    }
 }

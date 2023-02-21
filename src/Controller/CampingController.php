@@ -18,9 +18,12 @@ use App\Repository\TaxRepository;
 use App\Service\MobileHomeChecker;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
+use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use Knp\Snappy\Pdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -53,7 +56,7 @@ class CampingController extends AbstractController
      * @throws NonUniqueResultException
      */
     #[Route('/mobile-home/{id}', name: 'app_camping_mobile_home_book')]
-    public function mobileHomeBook(Housing $housing, Request $request, BookingRepository $bookingRepository, SessionInterface $session, TaxRepository $taxRepository, Security $security, EntityManagerInterface $em): Response
+    public function mobileHomeBook(Housing $housing, Request $request, BookingRepository $bookingRepository, SessionInterface $session, TaxRepository $taxRepository, Security $security, EntityManagerInterface $em, RequestStack $requestStack, Pdf $knpSnappyPdf): Response
     {
         $booking = new Booking();
 
@@ -73,11 +76,18 @@ class CampingController extends AbstractController
             $booking->setHousing($housing);
             $bookingRepository->save($booking, true);
 
-            $mobileHomeChecker->makeInvoice($booking, $taxRepository, $security, $em);
+            $invoice = $mobileHomeChecker->makeInvoice($booking, $taxRepository, $security, $em, $requestStack);
 
             $this->addFlash('success', 'Votre réservation à bien été prise en compte');
 
-            return $this->redirectToRoute('app_home');
+            $html = $this->renderView('invoice/invoice.html.twig', [
+                'invoice' => $invoice,
+            ]);
+
+            return new PdfResponse(
+                $knpSnappyPdf->getOutputFromHtml($html),
+                'facture.pdf',
+            );
         }
 
         return $this->renderForm('camping/mobile-home/book.html.twig', [

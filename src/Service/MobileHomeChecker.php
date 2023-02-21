@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Konekt\PdfInvoice\InvoicePrinter;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class MobileHomeChecker
@@ -95,9 +96,10 @@ class MobileHomeChecker
      * @param Booking $booking
      * @param TaxRepository $taxRepository
      * @throws NonUniqueResultException
+     * @return array
      * Creates the invoice for the booking and saves it in the user's invoices if one is currently logged in
      */
-    public function makeInvoice(Booking $booking, TaxRepository $taxRepository, Security $security, EntityManagerInterface $em): void
+    public function makeInvoice(Booking $booking, TaxRepository $taxRepository, Security $security, EntityManagerInterface $em, RequestStack $requestStack): array
     {
         $discount = 0;
         $highSeason = false;
@@ -126,32 +128,49 @@ class MobileHomeChecker
         $childrenPoolPrice = ($booking->getNbrChildren() * $taxRepository->getChildPoolTax()->getApplicantTax()) * $bookingDuration;
         $total = $housingTotal + $adultsPrice + $childrenPrice + $adultsPoolPrice + $childrenPoolPrice;
 
-        $invoice = new InvoicePrinter('A4', '€', 'fr');
-        $invoice->setType('Réservation Espadrille Volante');
-        $invoice->setReference(sprintf("Réservation %s#%d", $booking->getHousing()->getName(), $booking->getId()));
-        $invoice->setDate(date('d-m-Y', strtotime($booking->getCreated()->format('d-m-Y'))));
-        $invoice->setTime(date('H:i', strtotime($booking->getCreated()->format('H:i'))));
-        $invoice->setFrom(["Camping Espadrille Volante", "Rue de la plage", "1234 Plage", "France"]);
-        $invoice->setTo([$booking->getFirstName() . ' ' . $booking->getLastName()]);
+        $invoice = [];
+        $invoice['type'] = 'Reservation Espadrille Volante';
+        $invoice['reference'] = 'Reservation ' . $booking->getHousing()->getName() . '#' . $booking->getId();
+        $invoice['date'] = date('d-m-Y', strtotime($booking->getCreated()->format('d-m-Y')));
+        $invoice['time'] = date('H:i', strtotime($booking->getCreated()->format('H:i')));
+        $invoice['from'] = 'Camping Espadrille Volante, Rue de la plage, 1234 Plage, Le Soler, France';
+        $invoice['to'] = $booking->getFirstName() . ' ' . $booking->getLastName();
 
-        $invoice->addItem($booking->getHousing()->getName(), $booking->getHousing()->getDescription(), 1, 0, $booking->getHousing()->getPrice(), $discount, $housingTotal);
-        $invoice->addItem('Taxe de séjour adultes', 'Taxe de séjour appliquée au total d\'adultes profitants du séjour', $booking->getNbrAdults(), 0, $taxRepository->getAdultStayTax()->getApplicantTax(), 0, $adultsPrice);
-        $invoice->addItem('Taxe de séjour enfants', 'Taxe de séjour appliquée au total d\'enfants profitants du séjour', $booking->getNbrChildren(), 0, $taxRepository->getChildStayTax()->getApplicantTax(), 0, $childrenPrice);
-        $invoice->addItem('Taxe de piscine adultes', 'Taxe de piscine appliquée au total d\'adultes profitants de la piscine', $booking->getNbrAdults(), 0, $taxRepository->getAdultPoolTax()->getApplicantTax(), 0, $adultsPoolPrice);
-        $invoice->addItem('Taxe de piscine enfants', 'Taxe de piscine appliquée au total d\'enfants profitants de la piscine', $booking->getNbrChildren(), 0, $taxRepository->getChildPoolTax()->getApplicantTax(), 0, $childrenPoolPrice);
+        $invoice['logement']['name'] = $booking->getHousing()->getName();
+        $invoice['logement']['description'] = $booking->getHousing()->getDescription();
+        $invoice['logement']['price'] = $booking->getHousing()->getPrice();
+        $invoice['logement']['discount'] = $discount;
+        $invoice['logement']['total'] = $housingTotal;
 
-        $invoice->addTotal('Total', $total);
+        $invoice['taxes']['adults']['name'] = 'Taxe de sejour adultes';
+        $invoice['taxes']['adults']['description'] = 'Taxe de sejour appliquée au total d\'adultes profitants du sejour';
+        $invoice['taxes']['adults']['quantity'] = $booking->getNbrAdults();
+        $invoice['taxes']['adults']['price'] = $taxRepository->getAdultStayTax()->getApplicantTax();
+        $invoice['taxes']['adults']['total'] = $adultsPrice;
 
-        /*
-         * If the booking is during high season, add 15% tax
-         */
-        if ($highSeason) {
-            $invoice->addTotal('Taxe haute saison', $booking->getHousing()->getPrice() * 0.15);
-        }
+        $invoice['taxes']['children']['name'] = 'Taxe de sejour enfants';
+        $invoice['taxes']['children']['description'] = 'Taxe de sejour appliquee au total d\'enfants profitants du sejour';
+        $invoice['taxes']['children']['quantity'] = $booking->getNbrChildren();
+        $invoice['taxes']['children']['price'] = $taxRepository->getChildStayTax()->getApplicantTax();
+        $invoice['taxes']['children']['total'] = $childrenPrice;
 
-        $invoice->addTotal('Total à payer', $total + ($highSeason ? $booking->getHousing()->getPrice() * 0.15 : 0), true);
+        $invoice['taxes']['adultsPool']['name'] = 'Taxe de piscine adultes';
+        $invoice['taxes']['adultsPool']['description'] = 'Taxe de piscine appliquee au total d\'adultes profitants de la piscine';
+        $invoice['taxes']['adultsPool']['quantity'] = $booking->getNbrAdults();
+        $invoice['taxes']['adultsPool']['price'] = $taxRepository->getAdultPoolTax()->getApplicantTax();
+        $invoice['taxes']['adultsPool']['total'] = $adultsPoolPrice;
 
-        $invoice->setFooternote('Merci de votre réservation ! - Camping Espadrille Volante');
+        $invoice['taxes']['childrenPool']['name'] = 'Taxe de piscine enfants';
+        $invoice['taxes']['childrenPool']['description'] = 'Taxe de piscine appliquee au total d\'enfants profitants de la piscine';
+        $invoice['taxes']['childrenPool']['quantity'] = $booking->getNbrChildren();
+        $invoice['taxes']['childrenPool']['price'] = $taxRepository->getChildPoolTax()->getApplicantTax();
+        $invoice['taxes']['childrenPool']['total'] = $childrenPoolPrice;
+
+        $invoice['total']['pretax'] = $total;
+
+        $invoice['total']['highseasontax'] = $highSeason ? $booking->getHousing()->getPrice() * 0.15 : 0;
+
+        $invoice['total']['total'] = $total + ($highSeason ? $booking->getHousing()->getPrice() * 0.15 : 0);
 
         $invoiceSaver = new Invoice();
 
@@ -163,6 +182,12 @@ class MobileHomeChecker
         $em->persist($invoiceSaver);
         $em->flush();
 
-        $invoice->render(sprintf('facture-%s-%s-%s-%d', $booking->getFirstName(), $booking->getLastName(), $booking->getHousing()->getName(), $booking->getHousing()->getId()), 'F');
+        $token = mt_rand(500, 10000);
+        $code = $booking->getFirstName() . $booking->getLastName() . $token;
+
+        $session = $requestStack->getSession();
+        $session->set('invoice', $code);
+
+        return $invoice;
     }
 }

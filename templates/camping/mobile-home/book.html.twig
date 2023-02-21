@@ -66,7 +66,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="w-2/5 border-2 border-base-content/10 p-5 shadow-around rounded-lg">
+                <div class="w-2/5 border-2 border-base-content/10 p-5 shadow-around rounded-lg" data-turbo="false">
                     <h5 class="mb-5 font-semibold text-2xl">{{ housing.price }}€ <span class="font-normal">par jour</span> - {{ housing.price * 1.15 }}€ <span class=" inline-flex items-center gap-1 font-normal">en haute saison <span class="tooltip" data-tip="La haute saison commence le 21 juin et se termine le 31 août, pendant celle-ci, le tarif journalier augment de 15%"><i class="ph-info text-base"></i></span></span></h5>
                     {% if not app.user %}
                         <div class="alert alert-info shadow-lg mb-5">

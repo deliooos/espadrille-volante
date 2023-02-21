@@ -1,0 +1,91 @@
+<style>
+    *,
+    ::before,
+    ::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+</style>
+
+<main style="width: 21cm; min-height: 29.7cm; margin: 2rem; font-family: Heebo, sans-serif;">
+    <h1 style="margin-bottom: 0.75rem;">{{ invoice.type }}</h1>
+    <div style="margin-bottom: 2rem; color: gray">
+        <h2 style="margin-bottom: 0.5rem;">{{ invoice.reference }}</h2>
+        <p style="margin-bottom: 5px;">Le {{ invoice.date }}</p>
+        <p style="margin-bottom: 5px;">A {{ invoice.time }}</p>
+        <p style="margin-bottom: 5px;">{{ invoice.from }}</p>
+        <p style="margin-bottom: 5px;">{{ invoice.to }}</p>
+    </div>
+    <div style="margin-bottom: 2rem;">
+        <table style="border-collapse: collapse">
+            <tbody>
+                <thead>
+                    <tr>
+                        <th style="padding: 0.5rem; font-weight: bold; text-align: start">Nom</th>
+                        <th style="padding: 0.5rem; font-weight: bold; text-align: start">Description</th>
+                        <th style="padding: 0.5rem; font-weight: bold; text-align: start">Quantite</th>
+                        <th style="padding: 0.5rem; font-weight: bold; text-align: start">Prix unitaire</th>
+                        <th style="padding: 0.5rem; font-weight: bold; text-align: start">Reduction</th>
+                        <th style="padding: 0.5rem; font-weight: bold; text-align: start">Prix total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 0.5rem; font-weight: bold">{{ invoice.logement.name }}</td>
+                        <td style="padding: 0.5rem;">{{ invoice.logement.description }}</td>
+                        <td style="padding: 0.5rem;">1</td>
+                        <td style="padding: 0.5rem;">{{ invoice.logement.price }}</td>
+                        <td style="padding: 0.5rem;">{{ invoice.logement.discount }}</td>
+                        <td style="padding: 0.5rem;">{{ invoice.logement.total }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem; font-weight: bold">{{ invoice.taxes.adults.name }}</td>
+                        <td style="padding: 0.5rem;">{{ invoice.taxes.adults.description }}</td>
+                        <td style="padding: 0.5rem;">{{ invoice.taxes.adults.quantity }}</td>
+                        <td style="padding: 0.5rem;">{{ invoice.taxes.adults.price }}</td>
+                        <td style="padding: 0.5rem;">/</td>
+                        <td style="padding: 0.5rem;">{{ invoice.taxes.adults.total }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem; font-weight: bold">{{ invoice.taxes.children.name }}</td>
+                        <td style="padding: 0.5rem;">{{ invoice.taxes.children.description }}</td>
+                        <td style="padding: 0.5rem;">{{ invoice.taxes.children.quantity }}</td>
+                        <td style="padding: 0.5rem;">{{ invoice.taxes.children.price }}</td>
+                        <td style="padding: 0.5rem;">/</td>
+                        <td style="padding: 0.5rem;">{{ invoice.taxes.children.total }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem; font-weight: bold">{{ invoice.taxes.adultsPool.name }}</td>
+                        <td style="padding: 0.5rem;">{{ invoice.taxes.adultsPool.description }}</td>
+                        <td style="padding: 0.5rem;">{{ invoice.taxes.adultsPool.quantity }}</td>
+                        <td style="padding: 0.5rem;">{{ invoice.taxes.adultsPool.price }}</td>
+                        <td style="padding: 0.5rem;">/</td>
+                        <td style="padding: 0.5rem;">{{ invoice.taxes.adultsPool.total }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem; font-weight: bold">{{ invoice.taxes.childrenPool.name }}</td>
+                        <td style="padding: 0.5rem;">{{ invoice.taxes.childrenPool.description }}</td>
+                        <td style="padding: 0.5rem;">{{ invoice.taxes.childrenPool.quantity }}</td>
+                        <td style="padding: 0.5rem;">{{ invoice.taxes.childrenPool.price }}</td>
+                        <td style="padding: 0.5rem;">/</td>
+                        <td style="padding: 0.5rem;">{{ invoice.taxes.childrenPool.total }}</td>
+                    </tr>
+                </tbody>
+        </table>
+    </div>
+    <div style="margin-bottom: 2rem;">
+        <h2 style="margin-bottom: 0.75rem;">Total</h2>
+        <p style="margin-bottom: 5px; font-size: 1.2rem; color: gray">Total : <span style="font-weight: bold">{{ invoice.total.pretax }}</span></p>
+        {% if invoice.total.highseasontax %}
+            <p style="margin-bottom: 5px; font-size: 1.2rem; color: gray">Taxe haute saison : <span style="font-weight: bold">{{ invoice.total.highseasontax }}</span></p>
+        {% endif %}
+        <p style="margin-bottom: 5px; margin-top: 15px; font-size: 1.5rem">Total a payer : <span style="font-weight: bold">{{ invoice.total.total }}</span></p>
+    </div>
+    <div style="margin-bottom: 2rem;">
+        <p style="color: gray">Merci de faire confiance a l'Espadrille Volante, a bientôt dans notre camping !</p>
+    </div>
+    <div>
+        <p style="color: #B0413E">Nous vous conseillons d'enregistrer cette facture sous peine de ne plus la retrouver par la suite. Cependant, si vous possedez un compte sur L'Espadrille Volante, vous pourrez retrouver toutes vos reservations et factures dans votre espace personnel.</p>
+    </div>
+</main>
