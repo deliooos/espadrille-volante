@@ -3,15 +3,36 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+    <div class="flex flex-col items-center gap-5 px-[10%] pt-32">
+        <h1 class="font-title text-4xl">Inscription</h1>
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
-
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+        {{ form_start(registrationForm) }}
+            <div class="flex flex-col gap-3 w-full">
+                <div class="flex flex-col w-full">
+                    {{ form_label(registrationForm.firstName, 'Prénom', {label_attr: {'class': 'label'}}) }}
+                    {{ form_widget(registrationForm.firstName, {attr: {'class': 'input input-bordered'}}) }}
+                </div>
+                <div class="flex flex-col w-full">
+                    {{ form_label(registrationForm.lastName, 'Nom', {label_attr: {'class': 'label'}}) }}
+                    {{ form_widget(registrationForm.lastName, {attr: {'class': 'input input-bordered'}}) }}
+                </div>
+                <div class="flex flex-col w-full">
+                    {{ form_label(registrationForm.email, 'Mail', {label_attr: {'class': 'label'}}) }}
+                    {{ form_widget(registrationForm.email, {attr: {'class': 'input input-bordered'}}) }}
+                </div>
+                <div class="flex flex-col w-full">
+                    {{ form_label(registrationForm.phone, 'Téléphone', {label_attr: {'class': 'label'}}) }}
+                    {{ form_widget(registrationForm.phone, {attr: {'class': 'input input-bordered'}}) }}
+                </div>
+                <div class="flex flex-col w-full">
+                    {{ form_label(registrationForm.plainPassword, 'Mot de passe', {label_attr: {'class': 'label'}}) }}
+                    {{ form_widget(registrationForm.plainPassword, {attr: {'class': 'input input-bordered'}}) }}
+                </div>
+                <div>
+                    {{ form_row(registrationForm.agreeTerms) }}
+                </div>
+            </div>
+            <button type="submit" class="btn">Register</button>
+        {{ form_end(registrationForm) }}
+    </div>
 {% endblock %}

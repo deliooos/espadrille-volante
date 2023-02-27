@@ -22,7 +22,7 @@
                                 <h6 class="-mt-2 text-base-content/60">{{ space.surface }}m2</h6>
                                 <p class="line-clamp-3">{{ space.description }}</p>
                                 <div class="card-actions flex-col justify-start">
-                                    <button class="btn btn-primary gap-2">Réserver <span class="badge">{{ space.price }}€/j</span></button>
+                                    <a href="{{ path('app_camping_space_book', {id: space.id}) }}" class="btn btn-primary gap-2">Réserver <span class="badge">{{ space.price }}€/j</span></a>
                                     <div class="badge badge-outline">
                                         Par {{ company }}
                                     </div>

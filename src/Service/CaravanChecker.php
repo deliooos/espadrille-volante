@@ -13,7 +13,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class MobileHomeChecker
+class CaravanChecker
 {
     public function __construct(private readonly SessionInterface $session)
     {
@@ -47,44 +47,28 @@ class MobileHomeChecker
             }
         }
 
-
-        /*
-         * Check if the booking doesn't start before the camping opens
-         */
         if ($booking->getStartDate() <= DateTime::createFromFormat('d-m-Y', '04-05-2023')) {
             $this->session->getFlashBag()->add('error', 'Vous ne pouvez pas réserver avant le 05/05/2023');
             return false;
         }
 
-        /*
-         * Check if the booking doesn't end after the camping closes
-         */
         if ($booking->getEndDate() > DateTime::createFromFormat('d-m-Y', '10-10-2023')) {
             $this->session->getFlashBag()->add('error', 'Vous ne pouvez pas réserver après le 10/10/2023');
             return false;
         }
 
-        /*
-         * Check if the booking doesn't start before tomorrow
-         */
         if ($booking->getStartDate() < new \DateTime('now')) {
             $this->session->getFlashBag()->add('error', 'Vous ne pouvez pas réserver avant demain');
             return false;
         }
 
-        /*
-         * Check that the total of people doesn't exceed the size of the housing
-         */
         if (($booking->getNbrAdults() + $booking->getNbrChildren()) > $housing->getSize()) {
-            $this->session->getFlashBag()->add('error', sprintf('Il ne peut y avoir que %d personnes dans ce logement', $housing->getSize()));
+            $this->session->getFlashBag()->add('error', 'Vous ne pouvez pas réserver plus de ' . $housing->getSize() . ' personnes');
             return false;
         }
 
-        /*
-         * Check if the pool days don't exceed the number of days of the booking
-         */
         if ($booking->getPoolDays() > ($booking->getStartDate()->diff($booking->getEndDate())->days)) {
-            $this->session->getFlashBag()->add('error', 'Le nombre de jours de piscine ne peut pas dépasser la durée de la réservation');
+            $this->session->getFlashBag()->add('error', 'Vous ne pouvez pas réserver plus de jours de piscine que de jours de séjour');
             return false;
         }
 
@@ -92,11 +76,7 @@ class MobileHomeChecker
     }
 
     /**
-     * @param Booking $booking
-     * @param TaxRepository $taxRepository
      * @throws NonUniqueResultException
-     * @return array
-     * Creates the invoice for the booking and saves it in the user's invoices if one is currently logged in
      */
     public function makeInvoice(Booking $booking, TaxRepository $taxRepository, Security $security, EntityManagerInterface $em, RequestStack $requestStack): array
     {

@@ -18,6 +18,9 @@
                     </ul>
                 </li>
                 <li><a>Plan</a></li>
+                {% if app.user %}
+                    <li><a href="{{ path('app_home') }}" class="text-warning">Gestion</a></li>
+                {% endif %}
             </ul>
         </div>
         <a href="{{ path('app_home') }}" class="btn btn-ghost normal-case text-xl">{{ company }}</a>
@@ -37,9 +40,16 @@
                 </ul>
             </li>
             <li><a>Plan</a></li>
+            {% if app.user %}
+                <li><a href="{{ path('app_home') }}" class="text-warning">Gestion</a></li>
+            {% endif %}
         </ul>
     </div>
     <div class="navbar-end">
-        <a class="btn">Réserver</a>
+        {% if not app.user %}
+            <a href="{{ path('app_login') }}" class="btn">Connexion</a>
+        {% else %}
+            <a href="{{ path('app_logout') }}" class="btn">Déconnexion</a>
+        {% endif %}
     </div>
 </div>

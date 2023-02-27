@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réservation {{ housing.name }} - {{ company }}{% endblock %}
+
+{% block body %}
+    <div class="flex flex-col gap-5 px-[10%] pt-32">
+        <div>
+            <h1 class="font-title font-semibold text-4xl">Réserver {{ housing.name }}#{{ housing.id }}</h1>
+            <p class="text-base-content/60 mb-1">
+                {% if housing.owner %}
+                    Par {{ housing.owner.firstName}} {{ housing.owner.lastName }}
+                {% else %}
+                    Par {{ company }}
+                {% endif %}
+            </p>
+            <div class="flex gap-3">
+                <button class="flex items-center gap-1 font-semibold">
+                    <i class="ph-export text-xl"></i>
+                    <span class="link">Partager</span>
+                </button>
+                <button class="flex items-center gap-1 font-semibold">
+                    <i class="ph-heart text-xl"></i>
+                    <span class="link">Favoris</span>
+                </button>
+            </div>
+            <div data-controller="lightbox" class="grid grid-cols-4 grid-rows-2 gap-3 mt-4 max-h-[600px]">
+                <a href="https://picsum.photos/400/400" class="col-span-2 row-span-2">
+                    <img src="https://picsum.photos/400/400" alt="Image montrant le mobile home choisi" class="w-full h-full rounded-l-lg">
+                </a>
+                <a href="https://picsum.photos/400/400">
+                    <img src="https://picsum.photos/400/400" alt="Image montrant le mobile home choisi" class="w-full h-full">
+                </a>
+                <a href="https://picsum.photos/400/400">
+                    <img src="https://picsum.photos/400/400" alt="Image montrant le mobile home choisi" class="w-full h-full rounded-tr-lg">
+                </a>
+                <a href="https://picsum.photos/400/400">
+                    <img src="https://picsum.photos/400/400" alt="Image montrant le mobile home choisi" class="w-full h-full">
+                </a>
+                <a href="https://picsum.photos/400/400">
+                    <img src="https://picsum.photos/400/400" alt="Image montrant le mobile home choisi" class="w-full h-full rounded-br-lg">
+                </a>
+            </div>
+            <div class="flex gap-20 mt-16">
+                <div class="w-3/5">
+                    <h4 class="font-semibold text-xl">
+                        Mobile Home -
+                        {% if housing.owner %}
+                            Par {{ housing.owner.firstName}} {{ housing.owner.lastName }}
+                        {% else %}
+                            Par {{ company }}
+                        {% endif %}
+                    </h4>
+                    <div class="divider"></div>
+                    <div class="flex flex-col gap-3 mt-4">
+                        <div class="flex flex-col gap-1">
+                            <h5 class="flex items-center gap-1 font-semibold text-lg"><i class="ph-article text-2xl"></i>Description</h5>
+                            <p class="text-base-content/60">{{ housing.description }}</p>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <h5 class="flex items-center gap-1 font-semibold text-lg"><i class="ph-person text-2xl"></i>Places</h5>
+                            <p class="text-base-content/60">{{ housing.size }} personnes maximum</p>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <h5 class="flex items-center gap-1 font-semibold text-lg"><i class="ph-currency-eur text-2xl"></i>Prix</h5>
+                            <p class="text-base-content/60">{{ housing.price }}€/j</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-2/5 border-2 border-base-content/10 p-5 shadow-around rounded-lg" data-turbo="false">
+                    <h5 class="mb-5 font-semibold text-2xl">{{ housing.price }}€ <span class="font-normal">par jour</span> - {{ housing.price * 1.15 }}€ <span class=" inline-flex items-center gap-1 font-normal">en haute saison <span class="tooltip" data-tip="La haute saison commence le 21 juin et se termine le 31 août, pendant celle-ci, le tarif journalier augment de 15%"><i class="ph-info text-base"></i></span></span></h5>
+                    {% if not app.user %}
+                        <div class="alert alert-info shadow-lg mb-5">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span><a href="{{ path('app_register') }}" class="link">Créez un compte</a> pour consulter vos réservations à tout moment !</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {{ component('caravan_book') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -8,14 +8,18 @@ use App\Data\SpaceFilter;
 use App\Entity\Booking;
 use App\Entity\Housing;
 use App\Entity\Invoice;
+use App\Form\CaravanBookType;
 use App\Form\CaravanFilterType;
 use App\Form\MobileHomeBookType;
 use App\Form\MobileHomeFilterType;
+use App\Form\SpaceBookType;
 use App\Form\SpaceFilterType;
 use App\Repository\BookingRepository;
 use App\Repository\HousingRepository;
 use App\Repository\TaxRepository;
+use App\Service\CaravanChecker;
 use App\Service\MobileHomeChecker;
+use App\Service\SpaceChecker;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
@@ -80,14 +84,16 @@ class CampingController extends AbstractController
 
             $this->addFlash('success', 'Votre réservation à bien été prise en compte');
 
-            $html = $this->renderView('invoice/invoice.html.twig', [
-                'invoice' => $invoice,
-            ]);
+//            $html = $this->renderView('invoice/invoice.html.twig', [
+//                'invoice' => $invoice,
+//            ]);
+//
+//            return new PdfResponse(
+//                $knpSnappyPdf->getOutputFromHtml($html),
+//                'facture.pdf',
+//            );
 
-            return new PdfResponse(
-                $knpSnappyPdf->getOutputFromHtml($html),
-                'facture.pdf',
-            );
+            return $this->redirectToRoute('app_home');
         }
 
         return $this->renderForm('camping/mobile-home/book.html.twig', [
@@ -111,6 +117,52 @@ class CampingController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws NonUniqueResultException
+     */
+    #[Route('/caravane/{id}', name: 'app_camping_caravan_book')]
+    public function caravanBook(Housing $housing, Request $request, BookingRepository $bookingRepository, SessionInterface $session, TaxRepository $taxRepository, Security $security, EntityManagerInterface $em, RequestStack $requestStack, Pdf $knpSnappyPdf): Response
+    {
+        $booking = new Booking();
+
+        $form = $this->createForm(CaravanBookType::class, $booking);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $caravanChecker = new CaravanChecker($session);
+
+            // TODO handle if user is connected
+
+            if (!$caravanChecker->checkAvailability($booking, $housing)) {
+                return $this->redirectToRoute('app_camping_caravan_book', ['id' => $housing->getId()]);
+            }
+
+            $booking->setHousing($housing);
+            $bookingRepository->save($booking, true);
+
+            $invoice = $caravanChecker->makeInvoice($booking, $taxRepository, $security, $em, $requestStack);
+
+            $this->addFlash('success', 'Votre réservation à bien été prise en compte');
+
+//            $html = $this->renderView('invoice/invoice.html.twig', [
+//                'invoice' => $invoice,
+//            ]);
+//
+//            return new PdfResponse(
+//                $knpSnappyPdf->getOutputFromHtml($html),
+//                'facture.pdf',
+//            );
+
+            return $this->redirectToRoute('app_home');
+        }
+
+        return $this->renderForm('camping/caravan/book.html.twig', [
+            'housing' => $housing,
+            'form' => $form->createView(),
+        ]);
+    }
+
     #[Route('/emplacement', name: 'app_camping_place')]
     public function place(Request $request, HousingRepository $housingRepository): Response
     {
@@ -125,4 +177,51 @@ class CampingController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    #[Route('/emplacement/{id}', name: 'app_camping_space_book')]
+    public function placeBook(Housing $housing, Request $request, BookingRepository $bookingRepository, SessionInterface $session, TaxRepository $taxRepository, Security $security, EntityManagerInterface $em, RequestStack $requestStack, Pdf $knpSnappyPdf): Response
+    {
+        $booking = new Booking();
+
+        $form = $this->createForm(SpaceBookType::class, $booking);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $spaceChecker = new SpaceChecker($session);
+
+            // TODO handle if user is connected
+
+            if (!$spaceChecker->checkAvailability($booking, $housing)) {
+                return $this->redirectToRoute('app_camping_place_book', ['id' => $housing->getId()]);
+            }
+
+            $booking->setHousing($housing);
+            $bookingRepository->save($booking, true);
+
+            $invoice = $spaceChecker->makeInvoice($booking, $taxRepository, $security, $em, $requestStack);
+
+            $this->addFlash('success', 'Votre réservation à bien été prise en compte');
+
+//            $html = $this->renderView('invoice/invoice.html.twig', [
+//                'invoice' => $invoice,
+//            ]);
+//
+//            return new PdfResponse(
+//                $knpSnappyPdf->getOutputFromHtml($html),
+//                'facture.pdf',
+//            );
+
+            return $this->redirectToRoute('app_home');
+        }
+
+        return $this->renderForm('camping/space/book.html.twig', [
+            'housing' => $housing,
+            'form' => $form->createView(),
+        ]);
+    }
 }
+
