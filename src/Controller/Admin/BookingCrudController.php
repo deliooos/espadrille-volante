@@ -18,6 +18,7 @@ class BookingCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        // Setting all the necessary fields for the CRUD and hiding some of them on the form
         yield DateField::new('startDate', 'Début du séjour')->setFormat('dd/MM/yyyy')->hideOnForm();
         yield DateField::new('endDate', 'Fin du séjour')->setFormat('dd/MM/yyyy')->hideOnForm();
         yield AssociationField::new('housing', 'Hébergement')->hideOnForm();

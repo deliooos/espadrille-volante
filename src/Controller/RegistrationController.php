@@ -19,10 +19,12 @@ class RegistrationController extends AbstractController
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, AppAuthenticator $authenticator, EntityManagerInterface $entityManager): Response
     {
+        // If the user is already logged in, redirect to the home page
         if ($this->getUser()) {
             return $this->redirectToRoute('app_home');
         }
 
+        // Create a new user thanks to Symfony's Security
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);

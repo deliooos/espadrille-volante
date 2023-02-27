@@ -11,12 +11,7 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(): Response
     {
+        // Render the home page with a CTA
         return $this->render('home/index.html.twig');
-    }
-
-    #[Route('/invoice')]
-    public function renderPDF(): Response
-    {
-        return $this->render('invoice/invoice.html.twig');
     }
 }

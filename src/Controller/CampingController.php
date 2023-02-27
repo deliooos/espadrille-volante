@@ -38,18 +38,22 @@ class CampingController extends AbstractController
     #[Route('/', name: 'app_camping')]
     public function index(): Response
     {
+        // Rendering the home page
         return $this->render('camping/index.html.twig');
     }
 
     #[Route('/mobile-home', name: 'app_camping_mobile_home')]
     public function mobileHome(Request $request, HousingRepository $housingRepository): Response
     {
+        // Rendering the mobile homes list page with a form that allows to filter the results
         $data = new MobileHomeFilter();
         $form = $this->createForm(MobileHomeFilterType::class, $data);
         $form->handleRequest($request);
 
+        // Getting the mobile homes list with the filter
         $mobileHomes = $housingRepository->findMobileHomeSearch($data);
 
+        // Rendering the mobile homes list page with the renderForm method to make it "live"
         return $this->renderForm('camping/mobile-home/index.html.twig', [
             'mobile_homes' => $mobileHomes,
             'form' => $form->createView(),
@@ -62,37 +66,46 @@ class CampingController extends AbstractController
     #[Route('/mobile-home/{id}', name: 'app_camping_mobile_home_book')]
     public function mobileHomeBook(Housing $housing, Request $request, BookingRepository $bookingRepository, SessionInterface $session, TaxRepository $taxRepository, Security $security, EntityManagerInterface $em, RequestStack $requestStack, Pdf $knpSnappyPdf): Response
     {
+        // Creating the form to book a mobile home
         $booking = new Booking();
 
         $form = $this->createForm(MobileHomeBookType::class, $booking);
         $form->handleRequest($request);
 
+        // If the form is submitted and valid we handle it
         if ($form->isSubmitted() && $form->isValid()) {
 
             $mobileHomeChecker = new MobileHomeChecker($session);
 
             // TODO handle if user is connected
 
+            // Checking if the mobile home is available, and all the fields are good, if not we redirect the user to the mobile home page and reset the form
             if (!$mobileHomeChecker->checkAvailability($booking, $housing)) {
                 return $this->redirectToRoute('app_camping_mobile_home_book', ['id' => $housing->getId()]);
             }
 
+            // Saving the booking
             $booking->setHousing($housing);
             $bookingRepository->save($booking, true);
 
+            // Creating the invoice
             $invoice = $mobileHomeChecker->makeInvoice($booking, $taxRepository, $security, $em, $requestStack);
 
+            // Adding a flash message to inform the user that the booking is done
             $this->addFlash('success', 'Votre réservation à bien été prise en compte');
 
+            // Generate PDF with the invoice information
             $html = $this->renderView('invoice/invoice.html.twig', [
                 'invoice' => $invoice,
             ]);
 
+            // Force the download of the PDF
             return new PdfResponse(
                 $knpSnappyPdf->getOutputFromHtml($html),
                 'facture.pdf',
             );
 
+            // Uncomment this and comment the code above to redirect the user to the home page if PDF generation is not needed
 //            return $this->redirectToRoute('app_home');
         }
 

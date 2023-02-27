@@ -1,17 +1,18 @@
+/* Calling Tailwind Styles */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-.initialize {
-    @apply alert alert-info alert-success alert-warning alert-error
-}
 
+/* Styling form errors */
 @layer components {
     .form-error > ul > li {
         @apply mt-1 text-sm text-error;
     }
 }
 
+/* Styling form shadow */
 @layer utilities {
     .shadow-around {
         box-shadow: 0 0 5px 1px rgba(11, 11, 11, 0.1);

@@ -24,6 +24,7 @@ class HousingCrudController extends AbstractCrudController
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
+        // Making sure that only the owner can see his own housing, admins can see all
         if ($this->isGranted('ROLE_ADMIN')) {
             return parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
         }
@@ -34,7 +35,11 @@ class HousingCrudController extends AbstractCrudController
 
     public function createEntity(string $entityFqcn)
     {
+        // Overriding the createEntity method to set the owner of the housing to the current user if he is not an admin, otherwise, it means that the camping owns the housing
         $housing = new Housing();
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $housing->setOwner(null);
+        }
         $housing->setOwner($this->getUser());
         $housing->setType('mobilehome');
         return $housing;
@@ -42,12 +47,11 @@ class HousingCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        // Setting all the necessary fields for the CRUD and making sure that only admins can change the type of the housing
         yield ChoiceField::new('type')->setChoices([
             'Mobile Home' => 'mobilehome',
-            'Chalet' => 'chalet',
-            'Camping Car' => 'campingcar',
-            'Tente' => 'tent',
-            'Autre' => 'other',
+            'Caravan' => 'caravan',
+            'Emplacement' => 'space',
         ])->setPermission('ROLE_ADMIN');
         yield TextField::new('name');
         yield TextareaField::new('description');
