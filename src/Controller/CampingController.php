@@ -84,16 +84,16 @@ class CampingController extends AbstractController
 
             $this->addFlash('success', 'Votre réservation à bien été prise en compte');
 
-//            $html = $this->renderView('invoice/invoice.html.twig', [
-//                'invoice' => $invoice,
-//            ]);
-//
-//            return new PdfResponse(
-//                $knpSnappyPdf->getOutputFromHtml($html),
-//                'facture.pdf',
-//            );
+            $html = $this->renderView('invoice/invoice.html.twig', [
+                'invoice' => $invoice,
+            ]);
 
-            return $this->redirectToRoute('app_home');
+            return new PdfResponse(
+                $knpSnappyPdf->getOutputFromHtml($html),
+                'facture.pdf',
+            );
+
+//            return $this->redirectToRoute('app_home');
         }
 
         return $this->renderForm('camping/mobile-home/book.html.twig', [
@@ -145,16 +145,16 @@ class CampingController extends AbstractController
 
             $this->addFlash('success', 'Votre réservation à bien été prise en compte');
 
-//            $html = $this->renderView('invoice/invoice.html.twig', [
-//                'invoice' => $invoice,
-//            ]);
-//
-//            return new PdfResponse(
-//                $knpSnappyPdf->getOutputFromHtml($html),
-//                'facture.pdf',
-//            );
+            $html = $this->renderView('invoice/invoice.html.twig', [
+                'invoice' => $invoice,
+            ]);
 
-            return $this->redirectToRoute('app_home');
+            return new PdfResponse(
+                $knpSnappyPdf->getOutputFromHtml($html),
+                'facture.pdf',
+            );
+
+//            return $this->redirectToRoute('app_home');
         }
 
         return $this->renderForm('camping/caravan/book.html.twig', [
@@ -206,16 +206,16 @@ class CampingController extends AbstractController
 
             $this->addFlash('success', 'Votre réservation à bien été prise en compte');
 
-//            $html = $this->renderView('invoice/invoice.html.twig', [
-//                'invoice' => $invoice,
-//            ]);
-//
-//            return new PdfResponse(
-//                $knpSnappyPdf->getOutputFromHtml($html),
-//                'facture.pdf',
-//            );
+            $html = $this->renderView('invoice/invoice.html.twig', [
+                'invoice' => $invoice,
+            ]);
 
-            return $this->redirectToRoute('app_home');
+            return new PdfResponse(
+                $knpSnappyPdf->getOutputFromHtml($html),
+                'facture.pdf',
+            );
+
+//            return $this->redirectToRoute('app_home');
         }
 
         return $this->renderForm('camping/space/book.html.twig', [

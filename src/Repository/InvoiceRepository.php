@@ -63,4 +63,18 @@ class InvoiceRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    // Find invoices where created is 3 years ago
+    public function findAlerts()
+    {
+        $date = new \DateTime();
+        $date->modify('-3 years');
+        $date->modify('+7 days');
+
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.created < :date')
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->getResult();
+    }
 }

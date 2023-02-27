@@ -29,10 +29,12 @@
                     {{ form_widget(registrationForm.plainPassword, {attr: {'class': 'input input-bordered'}}) }}
                 </div>
                 <div>
-                    {{ form_row(registrationForm.agreeTerms) }}
+                    {{ form_row(registrationForm.agreeTerms, {
+                        'label': 'J\'accepte les conditions d\'utilisation',
+                    }) }}
                 </div>
             </div>
-            <button type="submit" class="btn">Register</button>
+            <button type="submit" class="btn">Inscription</button>
         {{ form_end(registrationForm) }}
     </div>
 {% endblock %}

@@ -2,11 +2,15 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Booking;
 use App\Entity\Housing;
 use App\Entity\Invoice;
+use App\Repository\BookingRepository;
+use App\Repository\InvoiceRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -34,6 +38,18 @@ class AdminController extends AbstractDashboardController
          return $this->render('admin/index.html.twig');
     }
 
+    #[Route('/admin/alertes', name: 'app_admin_alerts')]
+    public function alerts(BookingRepository $bookingRepository, InvoiceRepository $invoiceRepository): Response
+    {
+        $bookingAlerts = $bookingRepository->findAlerts();
+        $invoiceAlerts = $invoiceRepository->findAlerts();
+
+        return $this->render('admin/alerts.html.twig', [
+            'booking_alerts' => $bookingAlerts,
+            'invoice_alerts' => $invoiceAlerts,
+        ]);
+    }
+
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
@@ -45,7 +61,10 @@ class AdminController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::section('Logements');
         yield MenuItem::linkToCrud('Logements', 'fas fa-home', Housing::class);
+        yield MenuItem::linkToCrud('Réservations', 'fas fa-calendar-check', Booking::class);
         yield MenuItem::section('Factures');
         yield MenuItem::linkToCrud('Factures', 'fas fa-file-invoice', Invoice::class);
+        yield MenuItem::section('Alertes');
+        yield MenuItem::linkToRoute('Alertes', 'fas fa-exclamation-triangle', 'app_admin_alerts');
     }
 }

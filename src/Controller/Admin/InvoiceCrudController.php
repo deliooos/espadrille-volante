@@ -17,9 +17,9 @@ class InvoiceCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         yield TextField::new('reference');
-        yield TextField::new('addressedTo');
-        yield TextField::new('addressedEmail');
-        yield TextField::new('addressedPhone');
+        yield TextField::new('adressedTo');
+        yield TextField::new('adressedMail');
+        yield TextField::new('adressedPhone');
         yield TextField::new('housingIdentifier');
         yield NumberField::new('housingTotal');
         yield NumberField::new('adultsStayTax');

@@ -24,6 +24,9 @@ class HousingCrudController extends AbstractCrudController
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
+        }
         return parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters)
             ->andWhere('entity.owner = :owner')
             ->setParameter('owner', $this->getUser());
@@ -49,6 +52,7 @@ class HousingCrudController extends AbstractCrudController
         yield TextField::new('name');
         yield TextareaField::new('description');
         yield IntegerField::new('size');
+        yield IntegerField::new('surface');
         yield IntegerField::new('price');
         yield ImageField::new('thumbnail')->setBasePath('uploads/housing/')->setUploadDir('public/uploads/housing/')->setUploadedFileNamePattern('[randomhash].[extension]');
     }

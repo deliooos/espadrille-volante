@@ -68,4 +68,18 @@ class BookingRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    // Find bookings where endDate is less than 7 days from now
+    public function findAlerts()
+    {
+        $now = new \DateTime();
+        $now->add(new \DateInterval('P7D'));
+
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.endDate < :now')
+            ->setParameter('now', $now)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

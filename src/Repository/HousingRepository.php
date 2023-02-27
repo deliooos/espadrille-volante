@@ -80,7 +80,10 @@ class HousingRepository extends ServiceEntityRepository
                 ->andWhere('h.id NOT IN (
                     SELECT IDENTITY(b.housing)
                     FROM App\Entity\Booking b
-                    WHERE b.startDate <= :startDate AND b.endDate >= :endDate
+                    WHERE (:startDate BETWEEN b.startDate AND b.endDate)
+                    OR (:endDate BETWEEN b.startDate AND b.endDate)
+                    OR (b.startDate BETWEEN :startDate AND :endDate)
+                    OR (b.endDate BETWEEN :startDate AND :endDate)
                 )')
                 ->setParameter('startDate', $data->startDate)
                 ->setParameter('endDate', $data->endDate);
@@ -112,7 +115,10 @@ class HousingRepository extends ServiceEntityRepository
                 ->andWhere('c.id NOT IN (
                     SELECT IDENTITY(b.housing)
                     FROM App\Entity\Booking b
-                    WHERE b.startDate <= :startDate AND b.endDate >= :endDate
+                    WHERE (:startDate BETWEEN b.startDate AND b.endDate)
+                    OR (:endDate BETWEEN b.startDate AND b.endDate)
+                    OR (b.startDate BETWEEN :startDate AND :endDate)
+                    OR (b.endDate BETWEEN :startDate AND :endDate)
                 )')
                 ->setParameter('startDate', $data->startDate)
                 ->setParameter('endDate', $data->endDate);
@@ -139,7 +145,10 @@ class HousingRepository extends ServiceEntityRepository
                 ->andWhere('s.id NOT IN (
                     SELECT IDENTITY(b.housing)
                     FROM App\Entity\Booking b
-                    WHERE b.startDate <= :startDate AND b.endDate >= :endDate
+                    WHERE (:startDate BETWEEN b.startDate AND b.endDate)
+                    OR (:endDate BETWEEN b.startDate AND b.endDate)
+                    OR (b.startDate BETWEEN :startDate AND :endDate)
+                    OR (b.endDate BETWEEN :startDate AND :endDate)
                 )')
                 ->setParameter('startDate', $data->startDate)
                 ->setParameter('endDate', $data->endDate);

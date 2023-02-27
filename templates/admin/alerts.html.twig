@@ -1,0 +1,46 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_title %}Dashboard Admin{% endblock %}
+
+{% block content_title %}
+    <h1>Bienvenue sur l'espace administrateur de {{ company }}</h1>
+{% endblock %}
+
+{% block page_content %}
+    <h2>Alertes utilisateurs</h2>
+    {% if booking_alerts %}
+        {% for booking_alert in booking_alerts %}
+            <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">Attention !</h4>
+                <p>Le client {{ booking_alert.firstName }} {{ booking_alert.lastName }} a une réservation pour le {{ booking_alert.endDate|date('d/m/Y') }}.</p>
+                <hr>
+                <p class="mb-0">Veuillez supprimer ses informations avant le {{ booking_alert|date_modify('+1 week') }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">Tout est en ordre !</h4>
+            <p>Il n'y a pas d'alertes pour le moment.</p>
+            <hr>
+            <p class="mb-0">Lorsqu'il y aura des réservations à supprimer, elles apparaîtront ici 7 jours avant de devoir être supprimées.</p>
+        </div>
+    {% endif %}
+    <h2 class="mt-4">Alertes Factures</h2>
+    {% if invoice_alerts %}
+        {% for invoice_alert in invoice_alerts %}
+            <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">Attention !</h4>
+                <p>Le client {{ invoice_alert.firstName }} {{ invoice_alert.lastName }} avait une réservation jusqu'au {{ invoice_alert.endDate|date('d/m/Y') }}.</p>
+                <hr>
+                <p class="mb-0">Veuillez supprimer ses informations avant le {{ invoice_alert.endDate|date_modify('+3 years') }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">Tout est en ordre !</h4>
+            <p>Il n'y a pas d'alertes pour le moment.</p>
+            <hr>
+            <p class="mb-0">Lorsqu'il y aura des factures à supprimer, elles apparaîtront ici 7 jours avant de devoir être supprimées.</p>
+        </div>
+    {% endif %}
+{% endblock %}
